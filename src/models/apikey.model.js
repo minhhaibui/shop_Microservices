@@ -2,7 +2,7 @@ const mongoose = require("mongoose"); // Erase
 
 const DOCUMENT_NAME = "apiKey";
 const COLLECTION_NAME = "apiKeys";
-var apiKeySchema = new mongoose.Schema(
+const apiKeySchema = new mongoose.Schema(
   {
     key: {
       type: String,
