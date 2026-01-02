@@ -1,6 +1,6 @@
-const { StatusCodes, ReasonPhrases } = require("./statusCode/httpStatusCode");
+const {StatusCodes, ReasonPhrases} = require('./statusCode/httpStatusCode');
 
-class successReponse {
+class successResponse {
   constructor({
     message,
     statusCode = StatusCodes.OK,
@@ -16,12 +16,12 @@ class successReponse {
   }
 }
 
-class Ok extends successReponse {
-  constructor({ message, metadata }) {
-    super({ message, metadata });
+class Ok extends successResponse {
+  constructor({message, metadata}) {
+    super({message, metadata});
   }
 }
-class createReponse extends successReponse {
+class createResponse extends successResponse {
   constructor({
     message,
     statusCode = StatusCodes.CREATED,
@@ -29,9 +29,9 @@ class createReponse extends successReponse {
     metadata,
     option = {},
   }) {
-    super({ message, statusCode, reasonStatusCode, metadata });
+    super({message, statusCode, reasonStatusCode, metadata});
     this.option = option;
   }
 }
 
-module.exports = { Ok, createReponse, successReponse };
+module.exports = {Ok, createResponse: createResponse, successResponse: successResponse};

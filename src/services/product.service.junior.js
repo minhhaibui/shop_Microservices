@@ -1,16 +1,12 @@
-const {
-  product,
-  clothing,
-  electronic,
-  furniture,
-} = require("../models/product.model");
-const { badRequestError } = require("../core/error.response");
+const {product, clothing, electronic, furniture} = require('../models/product.model');
+const {badRequestError} = require('../core/error.response');
 const {
   findAllDraftsForShop,
   publishProductByShop,
   findAllPublishForShop,
   unPublishProductByShop,
-} = require("../models/repositories/product.repo");
+  searchProductByUser,
+} = require('../models/repositories/product.repo');
 
 //define Factory class to create product
 
@@ -23,27 +19,31 @@ class ProductFactory {
 
   static async createProduct(type, payload) {
     const productClass = ProductFactory.productRegistry[type];
-    if (!productClass)
-      throw new badRequestError(`Invalid product types ${type}`);
+    if (!productClass) throw new badRequestError(`Invalid product types ${type}`);
     return new productClass(payload).createProduct();
   }
   //put
-  static async publishProductByShop({ product_shop, product_id }) {
-    return publishProductByShop({ product_shop, product_id });
+  static async publishProductByShop({product_shop, product_id}) {
+    return publishProductByShop({product_shop, product_id});
   }
-  static async unPublishProductByShop({ product_shop, product_id }) {
-    return unPublishProductByShop({ product_shop, product_id });
+  static async unPublishProductByShop({product_shop, product_id}) {
+    return unPublishProductByShop({product_shop, product_id});
   }
 
   //end put
 
-  static async findAllDraftsForShop({ product_shop, limit = 50, skip = 0 }) {
-    const query = { product_shop, isDraft: true };
-    return await findAllDraftsForShop({ query, limit, skip });
+  //query
+  static async findAllDraftsForShop({product_shop, limit = 50, skip = 0}) {
+    const query = {product_shop, isDraft: true};
+    return await findAllDraftsForShop({query, limit, skip});
   }
-  static async findAllPublishForShop({ product_shop, limit = 50, skip = 0 }) {
-    const query = { product_shop, isPublished: true };
-    return await findAllPublishForShop({ query, limit, skip });
+  static async findAllPublishForShop({product_shop, limit = 50, skip = 0}) {
+    const query = {product_shop, isPublished: true};
+    return await findAllPublishForShop({query, limit, skip});
+  }
+
+  static async searchProduct({keySearch}) {
+    return await searchProductByUser({keySearch});
   }
 }
 
@@ -71,7 +71,7 @@ class Product {
 
   //create new product
   async createProduct(product_id) {
-    return await product.create({ ...this, _id: product_id });
+    return await product.create({...this, _id: product_id});
   }
 }
 
@@ -82,9 +82,9 @@ class Clothing extends Product {
       ...this.product_attributes,
       product_shop: this.product_shop,
     });
-    if (!newClothing) throw new badRequestError("create new clothing error");
+    if (!newClothing) throw new badRequestError('create new clothing error');
     const newProduct = await super.createProduct(newClothing._id);
-    if (!newProduct) throw new badRequestError("create new product error");
+    if (!newProduct) throw new badRequestError('create new product error');
     return newProduct;
   }
 }
@@ -96,16 +96,16 @@ class Furniture extends Product {
       ...this.product_attributes,
       product_shop: this.product_shop,
     });
-    if (!newFurniture) throw new badRequestError("create new furniture error");
+    if (!newFurniture) throw new badRequestError('create new furniture error');
     const newProduct = await super.createProduct(newFurniture._id);
-    if (!newProduct) throw new badRequestError("create new product error");
+    if (!newProduct) throw new badRequestError('create new product error');
     return newProduct;
   }
 }
 
 //register product types
-ProductFactory.registerProductType("Clothing", Clothing);
-ProductFactory.registerProductType("Furniture", Furniture);
+ProductFactory.registerProductType('Clothing', Clothing);
+ProductFactory.registerProductType('Furniture', Furniture);
 
 //export
 module.exports = ProductFactory;
